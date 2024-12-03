@@ -7,7 +7,6 @@ dotenv.config();
 app.use(cors());
 
 const userRoute=require("./routes/userRoute");
-
 app.use(express.json());
 mongoose.connect(process.env.URI).then(()=>{
    console.log("Connected Successfully");
@@ -16,4 +15,5 @@ mongoose.connect(process.env.URI).then(()=>{
         console.log("Running Successfully at",process.env.PORT);
    });
 });
-app.use(userRoute);
+app.use("/user",userRoute);
+
