@@ -1,19 +1,40 @@
+const jwt=require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/userModel");
 const router = express.Router();
+const mongoose=require("mongoose");
+
+const JWT_SECRET="your_jwt_secret_key";
+
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Access Denied: No Token Provided" });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: "Invalid Token" });
+    }
+    req.user = user; // `user` should include `id` from token payload
+    next();
+  });
+};
 
 // post operation
-router.post("/", async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ error: "Email already exists" });
+router.post("/",async(req,res)=>{
+  const{name,email,password}=req.body;
+  try{
+    const userexists=await User.findOne({email});
+    if(userexists){
+      return res.status(400).json({error:"Email already exists"});
     }
-    const userAdded = await User.create({ name, email, password });
+    const userAdded=await User.create({name,email,password});
     res.status(201).json(userAdded);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  }catch(error){
+    res.status(400).json({error:error.message});
   }
 });
 
@@ -71,39 +92,36 @@ router.patch("/:id", async (req, res) => {
 //post operation login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ email, password });
+
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-    res.status(200).json({ message: "Login successful", user });
+
+    // Generate JWT Token
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
+
+    res.status(200).json({ message: "Login successfully", token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get all users
-router.get("/", async (req, res) => {
+//dashboard get operation
+router.get("/dashboard", authenticateToken, async (req, res) => {
   try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get a single user
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const user = await User.findById(id);
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json(user);
+
+    res.status(200).json({ message: "Welcome to the dashboard", user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 module.exports = router;
