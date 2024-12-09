@@ -3,35 +3,22 @@ const express = require("express");
 const User = require("../models/userModel");
 const router = express.Router();
 const mongoose=require("mongoose");
+const bcrypt=require("bcryptjs");
 
 const JWT_SECRET="your_jwt_secret_key";
-
-
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ error: "Access Denied: No Token Provided" });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "Invalid Token" });
-    }
-    req.user = user; // `user` should include `id` from token payload
-    next();
-  });
-};
 
 // post operation
 router.post("/",async(req,res)=>{
   const{name,email,password}=req.body;
   try{
+    
     const userexists=await User.findOne({email});
     if(userexists){
       return res.status(400).json({error:"Email already exists"});
     }
-    const userAdded=await User.create({name,email,password});
+    const hashpassword=await bcrypt.hash(password,10);
+
+    const userAdded=await User.create({name,email,password:hashpassword});
     res.status(201).json(userAdded);
   }catch(error){
     res.status(400).json({error:error.message});
@@ -99,7 +86,11 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
+   const isinvalid=await bcrypt.compare(password,user.password);
+   if(!isinvalid){
+    return res.status(401).json({ error: "Invalid  password" });
 
+   }
     // Generate JWT Token
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
 
@@ -109,19 +100,25 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//dashboard get operation
-router.get("/dashboard", authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+// router.get("/profile", async (req, res) => {
+//   const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer <token>"
 
-    res.status(200).json({ message: "Welcome to the dashboard", user });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//   try {
+//     if (!token) {
+//       return res.status(401).json({ error: "Unauthorized: No token provided" });
+//     }
+
+//     // Verify token
+//     const decoded = jwt.verify(token, JWT_SECRET);
+
+//     // Fetch user details
+//     const user = await User.findById(decoded.id).select("-password"); // Exclude password field
+//     res.status(200).json(user);
+//   } catch (error) {
+//     res.status(401).json({ error: "Unauthorized: Invalid token" });
+//   }
+// });
+
 
 
 module.exports = router;

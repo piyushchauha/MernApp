@@ -3,8 +3,11 @@ const app=express();
 const mongoose=require("mongoose");
 const dotenv=require("dotenv");
 const cors=require("cors");
+const bodyParser=require("body-parser");
+
 dotenv.config();
 app.use(cors());
+app.use(bodyParser.json());
 
 const userRoute=require("./routes/userRoute");
 app.use(express.json());
