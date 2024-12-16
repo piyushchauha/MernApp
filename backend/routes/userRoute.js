@@ -20,7 +20,7 @@ router.post("/",async(req,res)=>{
     // const hashpassword=await bcrypt.hash(password,10);
 
     // const userAdded=await User.create({name,email,originalpassword:password,password:hashpassword});
-    const userAdded=await User.create({name,email,originalpassword:password});
+    const userAdded=await User.create({name,email,password:password});
     res.status(201).json(userAdded);
   }catch(error){
     res.status(400).json({error:error.message});
@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
 });
 
 // get single user operation 
-router.get("/:id",verifytoken, async (req, res) => {
+router.get("/:id", verifytoken,async (req, res) => {
   const { id } = req.params;
   try {
     const singleUser = await User.findById(id);
@@ -49,7 +49,7 @@ router.get("/:id",verifytoken, async (req, res) => {
 });
 
 // delete operation 
-router.delete("/:id",verifytoken, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const singleUser = await User.findByIdAndDelete(id); 
@@ -63,7 +63,7 @@ router.delete("/:id",verifytoken, async (req, res) => {
 });
 
 // patch operation 
-router.patch("/:id",verifytoken, async (req, res) => {
+router.patch("/:id",async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   try {
