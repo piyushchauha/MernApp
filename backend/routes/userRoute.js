@@ -2,9 +2,8 @@ const jwt=require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/userModel");
 const router = express.Router();
-const bcrypt=require("bcryptjs");
-const verifytoken = require('../Middleware/VerifyToken'); // Import the JWT verification middleware
-
+// const bcrypt=require("bcryptjs");
+const verifytoken = require('../Middleware/VerifyToken'); 
 
 const JWT_SECRET="your_jwt_secret_key";
 
@@ -28,7 +27,7 @@ router.post("/",async(req,res)=>{
 });
 
 // get all user operation 
-router.get("/", async (req, res) => {
+router.get("/",verifytoken,async (req, res) => {
   try {
     const showAll = await User.find();
     res.status(200).json(showAll);
@@ -38,7 +37,7 @@ router.get("/", async (req, res) => {
 });
 
 // get single user operation 
-router.get("/:id", verifytoken,async (req, res) => {
+router.get("/:id",verifytoken,async (req, res) => {
   const { id } = req.params;
   try {
     const singleUser = await User.findById(id);
@@ -49,7 +48,7 @@ router.get("/:id", verifytoken,async (req, res) => {
 });
 
 // delete operation 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",verifytoken, async (req, res) => {
   const { id } = req.params;
   try {
     const singleUser = await User.findByIdAndDelete(id); 
@@ -63,7 +62,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // patch operation 
-router.patch("/:id",async (req, res) => {
+router.patch("/:id",verifytoken,async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   try {
@@ -83,7 +82,7 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email,password });
 
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
