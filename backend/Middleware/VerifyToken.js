@@ -1,24 +1,27 @@
-const jwt =require('jsonwebtoken');
-  
-const JWT_SECRET="your_jwt_secret_key";
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = "your_jwt_secret_key";
+// const blacklisttoken=require('../models/BlacklistTokenmodal');
+const blacklisttoken = require('../models/BlacklistTokenmodal');
 
-const verifytoken=(req,res,next)=>{
-// const token = req.header('Authorization')?.replace('Bearer ', '');
-const token = req.header('Authorization')?.replace('Bearer ', '');
- 
-    if(!token){
-        return res.status(401).json({error:"Access denied.No token Provided"});
+const verifyToken = async (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({ error: "Access denied. No token provided" });
+  }
+
+  try {
+    const blacklisttoken=await blacklisttoken.findOne({token});
+    
+    if(blacklisttoken){
+        return res.status(401).json({message:"You're successfully loggedout.please login"});
     }
-
-    try{
-        const decoded=jwt.verify(token,JWT_SECRET);
-
-        req.user=decoded;
-
-        next();
-    }catch(error){
-        res.status(400).json({error:"Invalid or Expired token"})
-    }
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; 
+    next(); 
+  } catch (error) {
+    return res.status(400).json({ error: "Invalid token" });
+  }
 };
 
-module.exports=verifytoken;
+module.exports = verifyToken;

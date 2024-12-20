@@ -1,10 +1,12 @@
 const jwt=require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/userModel");
+const blacklisttoken=require("../models/BlacklistTokenmodal");
 const router = express.Router();
+
 // const bcrypt=require("bcryptjs");
 const verifytoken = require('../Middleware/VerifyToken'); 
-
+        
 const JWT_SECRET="your_jwt_secret_key";
 
 // post operation
@@ -27,7 +29,7 @@ router.post("/",async(req,res)=>{
 });
 
 // get all user operation 
-router.get("/",verifytoken,async (req, res) => {
+router.get("/",async (req, res) => {
   try {
     const showAll = await User.find();
     res.status(200).json(showAll);
@@ -102,6 +104,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+//Blacklist token
+router.post("/logout", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; 
+
+  try {
+    if (token) {
+
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const expiresAt = new Date(decoded.exp * 1000); 
+
+      await blacklisttoken.create({
+        token,
+        expiresAt,
+      });
+      
+      res.status(200).json({ message: "Successfully logged out" });
+    } else {
+      return res.status(400).json({ error: "No token provided" });
+    }
+  } catch (error) {
+    res.status(501).json({ error: error.message });
+  }
+});
 
 
 module.exports = router;
