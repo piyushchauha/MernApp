@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid'); // Import UUID for generating unique session IDs
+
 const jwt=require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/userModel");
@@ -95,8 +97,10 @@ router.post("/login", async (req, res) => {
   //   return res.status(401).json({ error: "Invalid  password" });
 
   //  }
+  const sessionId = uuidv4();
+
     // Generate JWT Token
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id, email: user.email ,sessionId}, JWT_SECRET, { expiresIn: "1h" });
 
     res.status(200).json({ message: "Login successfully", token });
   } catch (error) {
@@ -106,7 +110,7 @@ router.post("/login", async (req, res) => {
 
 
 //Blacklist token
-router.post("/logout", async (req, res) => {
+router.post("/logout",verifytoken, async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; 
 
   try {

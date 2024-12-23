@@ -11,9 +11,9 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    const blacklisttoken=await blacklisttoken.findOne({token});
+    const blacklistentry=await blacklisttoken.findOne({token});
     
-    if(blacklisttoken){
+    if(blacklistentry){
         return res.status(401).json({message:"You're successfully loggedout.please login"});
     }
     const decoded = jwt.verify(token, JWT_SECRET);
