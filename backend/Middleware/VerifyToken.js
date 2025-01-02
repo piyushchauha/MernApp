@@ -16,12 +16,12 @@ const verifyToken = async (req, res, next) => {
     if (blacklistentry) {
       return res
         .status(401)
-        .json({ message: "You're successfully loggedout.please login" });
+        .json({ message: 'You`re successfully loggedout.please login' });
     }
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (error) {
+  } catch {
     return res.status(400).json({ error: 'Invalid token' });
   }
 };

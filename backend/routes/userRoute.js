@@ -74,7 +74,6 @@ router.delete('/:id', verifytoken, async (req, res) => {
 // patch operation
 router.patch('/:id', verifytoken, async (req, res) => {
   const { id } = req.params;
-  const { name, email, password } = req.body;
   try {
     const updateUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -106,7 +105,7 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT Token
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-      expiresIn: '5s',
+      expiresIn: '25s',
     });
 
     res.status(200).json({ message: 'Login successfully', token });

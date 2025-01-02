@@ -6,8 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "start": "node server.js",
-   "lint:check": "eslint src .js",
-  "lint:fix": "eslint src --fix",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix .",
     "format": "prettier --write ."
   },
   "eslintConfig": {
@@ -27,8 +27,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "redis": "^4.7.0",
     "uuid": "^11.0.3"
   },

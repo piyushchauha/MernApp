@@ -37,7 +37,7 @@ app.use(cors(corsoption));
 // app.use(cors());
 mongoose.connect(process.env.URI).then(() => {
   console.log('Connected Successfully');
-  app.listen(process.env.PORT || 8000, err => {
+  app.listen(process.env.PORT || 8000, (err) => {
     if (err) console.log(err);
     console.log('Running Successfully at', process.env.PORT);
   });
