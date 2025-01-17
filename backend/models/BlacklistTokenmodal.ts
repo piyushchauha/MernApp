@@ -22,11 +22,14 @@ const BlacklistTokenSchema: Schema<IBlacklistToken> = new Schema(
       required: true,
     },
   },
-  { timestamps: true}
+  { timestamps: true }
 );
 
 BlacklistTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-const BlacklistToken = mongoose.model<IBlacklistToken>('BlacklistToken', BlacklistTokenSchema);
+const blacklisttoken = mongoose.model<IBlacklistToken>(
+  'BlacklistToken',
+  BlacklistTokenSchema
+);
 
-export default BlacklistToken;
+export default blacklisttoken;

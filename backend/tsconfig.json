@@ -1,17 +1,14 @@
 {
-    "compilerOptions": {
-      "target": "ES6", // Target modern JavaScript features
-      "module": "commonjs", // Use CommonJS for Node.js compatibility
-      "outDir": "dist", // Output compiled files into the `dist` directory
-      "rootDir": "./",                           // Your source TypeScript files directory
-      "strict": true, // Enable strict type checking
-      "esModuleInterop": true, // Allow default imports for CommonJS modules
-      "forceConsistentCasingInFileNames": true, // Enforce case-sensitive file imports
-      "skipLibCheck": true // Skip type checking for library files
-    },
-    "include": [
-        "*.ts"                             
-      ], // Include all TypeScript files in the project
-    "exclude": ["node_modules", "dist"] // Exclude the `node_modules` and `dist` directories
-  }
-  
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext", // Change this to "ESNext"
+    "outDir": "dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

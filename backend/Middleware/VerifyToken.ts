@@ -1,13 +1,14 @@
-import {Request,Response,NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
+
 const JWT_SECRET = 'your_jwt_secret_key';
 // const blacklisttoken=require('../models/BlacklistTokenmodal');
-const blacklisttoken = require('../models/BlacklistTokenmodal');
+import blacklisttoken from '../models/BlacklistTokenmodal';
 
-interface DecodedToken{
-  _id:string;
-  email:string;
+interface DecodedToken {
+  _id: string;
+  email: string;
 }
 
 declare global {
@@ -18,8 +19,11 @@ declare global {
   }
 }
 
-
-const verifyToken = async (req:Request, res:Response, next:NextFunction):Promise<Response|void> => {
+const verifytoken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
@@ -42,4 +46,4 @@ const verifyToken = async (req:Request, res:Response, next:NextFunction):Promise
   }
 };
 
-module.exports = verifyToken;
+export default verifytoken;
