@@ -1,27 +1,25 @@
-import { Application } from 'express';
-import { CorsOptions } from 'cors';
-
+import express, { Application } from 'express';
 //Express
-import express from 'express';
 
 //Mongoose
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 //Dotenv
-const dotenv = require('dotenv');
-
+import dotenv from 'dotenv';
 //Cors
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 
 //BodyParser
-const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
+
+//Useroute
+import userRoute from './routes/userRoute';
 
 dotenv.config();
 
 const app: Application = express();
 
 app.use(bodyParser.json());
-const userRoute = require('./routes/userRoute');
+
 app.use(express.json());
 
 const allowedorigin = 'http://localhost:3000';
@@ -29,7 +27,7 @@ const allowedorigin = 'http://localhost:3000';
 const corsoption: CorsOptions = {
   origin: (
     origin: string | undefined,
-    callback: (err: Error | null, allowed?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void
   ) => {
     if (origin === allowedorigin || !origin) {
       callback(null, true);
@@ -43,7 +41,7 @@ const corsoption: CorsOptions = {
 
 app.use(cors(corsoption));
 // app.use(cors());
-mongoose.connect(process.env.URI).then(() => {
+mongoose.connect(process.env.URI || '').then(() => {
   console.log('Connected Successfully');
   app.listen(process.env.PORT || 8000, () => {
     console.log('Running Successfully at', process.env.PORT);

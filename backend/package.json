@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.ts",
+"dev": "nodemon  server.ts",
     "start": "node server.ts",
     "lint:check": "eslint **/*.ts",
     "lint:fix": "eslint **/*.ts --fix",
@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@redis/client": "^1.6.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
@@ -28,19 +27,15 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "redis": "^4.7.0",
-    "ts-node": "^10.9.2",
-    "uuid": "^11.0.3"
+    "react-dom": "^17.0.2"
   },
-  "type": "module",
-  "module": "commonjs",
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/mongoose": "^5.11.96",
+    "@types/node": "^22.10.7",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.18.0",
@@ -51,7 +46,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
-    "nodemon": "^3.1.7",
+    "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"

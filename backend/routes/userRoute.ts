@@ -15,8 +15,9 @@ import blacklisttoken from '../models/BlacklistTokenmodal';
 const router = Router();
 
 // const bcrypt=require("bcryptjs");
-const verifytoken = require('../Middleware/VerifyToken');
-// import verifytoken from '../Middleware/VerifyToken';
+// const verifytoken = require('../Middleware/VerifyToken');
+import verifytoken from '../Middleware/VerifyToken';
+
 const JWT_SECRET = 'your_jwt_secret_key';
 
 // post operation
@@ -135,7 +136,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     // Generate JWT Token
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-      expiresIn: '25s',
+      expiresIn: '5s',
     });
 
     res.status(200).json({ message: 'Login successfully', token });
@@ -182,4 +183,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;
