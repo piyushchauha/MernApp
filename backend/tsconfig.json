@@ -1,7 +1,6 @@
 {
   
   "compilerOptions": {
-    // "esm": true,
     "target": "ES6",
     "module": "CommonJS",
     "moduleResolution": "node",

@@ -18,9 +18,12 @@ const router = Router();
 // const verifytoken = require('../Middleware/VerifyToken');
 import verifytoken from '../Middleware/VerifyToken';
 
+//Multer
+import multer from 'multer';
+
 const JWT_SECRET = 'your_jwt_secret_key';
 
-// post operation
+// post operation Api
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
   try {
@@ -40,7 +43,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// get all user operation
+// get all user operation Api
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const showAll = await User.find();
@@ -52,7 +55,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// get single user operation
+// get single user operation Api
 router.get(
   '/:id',
   verifytoken,
@@ -75,7 +78,7 @@ router.get(
   }
 );
 
-// delete operation
+// delete operation Api
 router.delete(
   '/:id',
   verifytoken,
@@ -95,7 +98,7 @@ router.delete(
   }
 );
 
-// patch operation
+// patch operation Api
 router.patch(
   '/:id',
   verifytoken,
@@ -116,7 +119,7 @@ router.patch(
   }
 );
 
-//post operation login
+//post operation login Api
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
@@ -147,7 +150,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-//Post Blacklist token
+//Post Blacklist token Api
 router.post(
   '/logout',
   verifytoken,
@@ -183,4 +186,35 @@ router.post(
   }
 );
 
+//Upload file storage(Multer)
+const upload = multer({ dest: 'C:/upload' });
+
+//Upload image Api
+const uploadedfiles = new Set();
+router.post(
+  '/upload',
+  upload.single('image'),
+  (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        res.status(400).json('No file found');
+      }
+      if (uploadedfiles.has(req.file?.originalname)) {
+        res.status(400).json('File has been already uploaded');
+      }
+      uploadedfiles.add(req.file?.originalname);
+      res.status(200).json({
+        message: 'Image uploaded successfully',
+        timestamp: new Date().toISOString(),
+        FileDetails: {
+          file: req.file,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(501).json({ error: error.message });
+      }
+    }
+  }
+);
 export default router;
